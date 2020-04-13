@@ -1,5 +1,6 @@
 import pkgutil
 from .base import BaseCrawler
+from .base import IhuanBaseCrawler
 import inspect
 
 
@@ -10,5 +11,7 @@ for loader, name, is_pkg in pkgutil.walk_packages(__path__):
     for name, value in inspect.getmembers(module):
         globals()[name] = value
         if inspect.isclass(value) and issubclass(value, BaseCrawler) and value is not BaseCrawler:
+            classes.append(value)
+        if inspect.isclass(value) and issubclass(value, IhuanBaseCrawler) and value is not IhuanBaseCrawler:
             classes.append(value)
 __all__ = __ALL__ = classes

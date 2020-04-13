@@ -53,6 +53,26 @@ CYCLE_TESTER = env.int('CYCLE_TESTER', 2)
 # definition of getter cycle, it will get proxy every CYCLE_GETTER second
 CYCLE_GETTER = env.int('CYCLE_GETTER', 500)
 
+TEST_TIMEOUT = env.int('TEST_TIMEOUT', 10)
+TEST_BATCH = env.int('TEST_BATCH', 500)
+# TEST_HEADERS = env.json('TEST_HEADERS', {
+#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+# })
+TEST_VALID_STATUS = env.list('TEST_VALID_STATUS', [200, 206, 302, 301, 307])
+
+# definition of api
+API_HOST = env.str('API_HOST', '0.0.0.0')
+API_PORT = env.int('API_PORT', 8000)
+API_THREADED = env.bool('API_THREADED', True)
+
+# flags of enable
+ENABLE_TESTER = env.bool('ENABLE_TESTER', True)
+ENABLE_GETTER = env.bool('ENABLE_GETTER', True)
+ENABLE_SERVER = env.bool('ENABLE_SERVER', True)
+
+logger.add(env.str('LOG_RUNTIME_FILE', 'runtime.log'), level='DEBUG', rotation='100 MB', retention='1 days')
+logger.add(env.str('LOG_ERROR_FILE', 'error.log'), level='ERROR', rotation='100 MB', retention='2 days')
+
 # definition of tester
 TEST_URL = [
     # 百度
@@ -124,22 +144,3 @@ TEST_URL = [
     'http://www.bilibili.com/',
     'http://www.sogou.com',
 ]
-TEST_TIMEOUT = env.int('TEST_TIMEOUT', 10)
-TEST_BATCH = env.int('TEST_BATCH', 500)
-# TEST_HEADERS = env.json('TEST_HEADERS', {
-#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
-# })
-TEST_VALID_STATUS = env.list('TEST_VALID_STATUS', [200, 206, 302, 301, 307])
-
-# definition of api
-API_HOST = env.str('API_HOST', '0.0.0.0')
-API_PORT = env.int('API_PORT', 8000)
-API_THREADED = env.bool('API_THREADED', True)
-
-# flags of enable
-ENABLE_TESTER = env.bool('ENABLE_TESTER', True)
-ENABLE_GETTER = env.bool('ENABLE_GETTER', True)
-ENABLE_SERVER = env.bool('ENABLE_SERVER', True)
-
-logger.add(env.str('LOG_RUNTIME_FILE', 'runtime.log'), level='DEBUG', rotation='100 MB', retention='1 days')
-logger.add(env.str('LOG_ERROR_FILE', 'error.log'), level='ERROR', rotation='100 MB', retention='2 days')

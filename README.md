@@ -1,4 +1,4 @@
-# ProxyPool
+# FreeProxyPool
 
 ![](https://img.shields.io/badge/python-3.6%2B-brightgreen)
 
@@ -13,8 +13,9 @@
 
 
 ### 运行代理池
+1. 配置好redis
 
-两种方式运行代理池，一种是 Tester、Getter、Server 全部运行，另一种是按需分别运行。
+2. 两种方式运行代理池，一种是 Tester、Getter、Server 全部运行，另一种是按需分别运行。
 
 一般来说可以选择全部运行，命令如下：
 
@@ -22,7 +23,7 @@
 python3 run.py
 ```
 
-运行之后会启动 Tester、Getter、Server，这时访问 [http://localhost:5555/random](http://localhost:5555/random) 即可获取一个随机可用代理。
+运行之后会启动 Tester、Getter、Server，这时访问 [http://localhost:8000/random](http://localhost:8000/random) 即可获取一个随机可用代理。
 
 或者如果你弄清楚了代理池的架构，可以按需分别运行，命令如下：
 

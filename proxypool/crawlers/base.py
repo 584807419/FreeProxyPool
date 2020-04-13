@@ -33,6 +33,8 @@ agents_list = [
 class BaseCrawler(object):
     urls = []
     data = None
+    headers = {}
+    cookies = None
 
     def fetch(self, url, data=None, **kwargs):
         try:
@@ -50,13 +52,48 @@ class BaseCrawler(object):
             return
 
     @logger.catch
-    def crawl(self, data=None):
+    def crawl(self, data=None, headers={}, cookies=None):
         """
         crawl main method
         """
         for url in self.urls:
             logger.info(f'获取代理中 {url}')
             html = self.fetch(url, data=data)
+            if html:
+                for proxy in self.parse(html):
+                    logger.info(f'fetched proxy {proxy.string()} from {url}')
+                    yield proxy
+
+
+class IhuanBaseCrawler(object):
+    urls = []
+    data = None
+    headers = {}
+    cookies = None
+
+    def fetch(self, url, data=None, headers={}, cookies=None, **kwargs):
+        try:
+            headers['User-Agent'] = random.choice(agents_list)
+            kwargs["headers"] = headers
+            kwargs.pop('headers')
+            if headers.get('user-agent'):
+                headers.pop('User-Agent')
+            response = requests.get(url, headers=headers, cookies=cookies, verify=False, timeout=60, **kwargs)
+            if response.status_code == 200:
+                return response.text
+            logger.info(f'fetch-status_code：{response.status_code} response.text {response.text}')
+        except Exception as e:
+            logger.error(f'fetch-error-occur：url {url} e {e}')
+            return
+
+    @logger.catch
+    def crawl(self, data=None, headers={}, cookies=None):
+        """
+        crawl main method
+        """
+        for url in self.urls:
+            logger.info(f'获取代理中 {url}')
+            html = self.fetch(url, data=data, headers=headers, cookies=cookies)
             if html:
                 for proxy in self.parse(html):
                     logger.info(f'fetched proxy {proxy.string()} from {url}')
