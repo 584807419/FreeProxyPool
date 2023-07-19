@@ -39,7 +39,7 @@ class RedisClient(object):
             return
         if not self.exists(proxy):
             if IS_REDIS_VERSION_2:
-                return self.db.zadd(REDIS_KEY, score, proxy.string())
+                return self.db.zadd(REDIS_KEY, score, proxy.string())  # 将代理及其分数值加入到有序集当中，如果已存在则更新分数
             return self.db.zadd(REDIS_KEY, {proxy.string(): score})
     
     def random(self) -> Proxy:
@@ -55,7 +55,7 @@ class RedisClient(object):
         if len(proxies):
             return convert_proxy_or_proxies(choice(proxies))
         # else get proxy by rank
-        proxies = self.db.zrevrange(REDIS_KEY, PROXY_SCORE_MIN, PROXY_SCORE_MAX)
+        proxies = self.db.zrevrange(REDIS_KEY, PROXY_SCORE_MIN, PROXY_SCORE_MAX)  # 返回有序集中指定区间内的成员，通过索引，分数从高到低
         if len(proxies):
             return convert_proxy_or_proxies(choice(proxies))
         # else raise error
@@ -74,7 +74,7 @@ class RedisClient(object):
         if len(proxies):
             return '<br/>'.join(proxies[:50])
         # else get proxy by rank
-        proxies = self.db.zrevrange(REDIS_KEY, PROXY_SCORE_MIN, PROXY_SCORE_MAX)
+        proxies = self.db.zrevrange(REDIS_KEY, PROXY_SCORE_MIN, PROXY_SCORE_MAX)  # 返回有序集中指定区间内的成员，通过索引，分数从高到低
         if len(proxies):
             return convert_proxy_or_proxies(choice(proxies))
         # else raise error
@@ -86,17 +86,18 @@ class RedisClient(object):
         :param proxy: proxy
         :return: new score
         """
-        score = self.db.zscore(REDIS_KEY, proxy.string())
-        # current score is larger than PROXY_SCORE_MIN
-        if score and score > PROXY_SCORE_MIN:
-            # logger.info(f'{proxy.string()} current score {score}, decrease 1')
-            if IS_REDIS_VERSION_2:
-                return self.db.zincrby(REDIS_KEY, proxy.string(), -1)
-            return self.db.zincrby(REDIS_KEY, -1, proxy.string())
-        # otherwise delete proxy
-        else:
-            # logger.info(f'{proxy.string()} current score {score}, remove')
-            return self.db.zrem(REDIS_KEY, proxy.string())
+        # score = self.db.zscore(REDIS_KEY, proxy.string())
+        # # current score is larger than PROXY_SCORE_MIN
+        # if score and score > PROXY_SCORE_MIN:
+        #     # logger.info(f'{proxy.string()} current score {score}, decrease 1')
+        #     if IS_REDIS_VERSION_2:
+        #         return self.db.zincrby(REDIS_KEY, proxy.string(), -1)
+        #     return self.db.zincrby(REDIS_KEY, -1, proxy.string())
+        # # otherwise delete proxy
+        # else:
+        #     # logger.info(f'{proxy.string()} current score {score}, remove')
+        #     return self.db.zrem(REDIS_KEY, proxy.string())
+        return self.db.zrem(REDIS_KEY, proxy.string())
     
     def exists(self, proxy: Proxy) -> bool:
         """
@@ -115,7 +116,7 @@ class RedisClient(object):
         # logger.info(f'{proxy.string()} is valid, set to {PROXY_SCORE_MAX}')
         if IS_REDIS_VERSION_2:
             return self.db.zadd(REDIS_KEY, PROXY_SCORE_MAX, proxy.string())
-        return self.db.zadd(REDIS_KEY, {proxy.string(): PROXY_SCORE_MAX})
+        return self.db.zadd(REDIS_KEY, {proxy.string(): PROXY_SCORE_MAX})  # 将代理和分数加入有序集合中，如果已存在则更新分数
     
     def count(self) -> int:
         """
@@ -138,7 +139,7 @@ class RedisClient(object):
         :param end: end index
         :return: list of proxies
         """
-        return convert_proxy_or_proxies(self.db.zrevrange(REDIS_KEY, start, end - 1))
+        return convert_proxy_or_proxies(self.db.zrevrange(REDIS_KEY, start, end - 1))  # 返回有序集中指定区间内的成员，通过索引，分数从高到低
 
 
 if __name__ == '__main__':

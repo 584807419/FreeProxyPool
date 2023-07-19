@@ -33,7 +33,7 @@ class Getter(object):
         if self.is_full():
             return
         for crawler in self.crawlers:
-            for proxy in crawler.crawl(crawler.data, crawler.headers, crawler.cookies):
+            for proxy in crawler.crawl(crawler.data, crawler.headers, crawler.cookies):  # 遍历生成器，逐个代理加入有序集合中
                 self.redis.add(proxy)
 
 
