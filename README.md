@@ -25,9 +25,9 @@ python run.py
 ### 2. 分别运行
 
 ```shell script
-python3 run.py --processor getter
-python3 run.py --processor tester
-python3 run.py --processor server
+python run.py --processor getter
+python run.py --processor tester
+python run.py --processor server
 ```
 
 这里 processor 可以指定运行 Tester、Getter 还是 Server。
